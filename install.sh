@@ -8,7 +8,7 @@ link() {
     dst="$HOME/$2"
 
     # if file already exists and is not a symbolic link, back it up
-    if [-e "$dst" ] && [ ! -L "$dst" ]; then
+    if [ -e "$dst" ] && [ ! -L "$dst" ]; then
 	echo "Backing up $dst -> $dst.bak"
 	mv "$dst" "$dst.bak"
     fi
