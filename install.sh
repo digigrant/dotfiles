@@ -1,7 +1,9 @@
 #!/usr/bin/env bash
 set -e
 
+# establish environment - other scripts and files will ingest this
 DOTFILES="$HOME/dotfiles"
+echo "export DOTFILES=\"$DOTFILES\"" > "$DOTFILES/env"
 
 link() {
     src="$DOTFILES/$1"
@@ -20,3 +22,4 @@ link() {
 link bash/bashrc .bashrc
 link git/gitconfig .gitconfig
 link emacs/init.el .emacs.d/init.el
+link emacs/early-init.el .emacs.d/early-init.el

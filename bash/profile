@@ -28,3 +28,16 @@ fi
 
 # PATH
 export PATH=$PATH:/home/grant/jai/bin
+
+# load dotfiles env
+DOTFILES_ENV="$HOME/dotfiles/env"
+if [ -r "$DOTFILES_ENV" ]; then
+    . "$DOTFILES_ENV"
+fi
+
+# GNOME keyboard remaps
+if command -v gsettings >/dev/null && [ -n "$DOTFILES" ]; then
+   if gsettings writable org.gnome.desktop.input-sources xkb-options; then
+      "$DOTFILES/keyboard/gnome-keyboard.sh"
+   fi
+fi
