@@ -20,6 +20,7 @@ link() {
 }
 
 link bash/bashrc .bashrc
+link bash/profile .profile
 link git/gitconfig .gitconfig
 link emacs/init.el .emacs.d/init.el
 link emacs/early-init.el .emacs.d/early-init.el
