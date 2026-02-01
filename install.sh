@@ -24,3 +24,8 @@ link bash/profile .profile
 link git/gitconfig .gitconfig
 link emacs/init.el .emacs.d/init.el
 link emacs/early-init.el .emacs.d/early-init.el
+
+if ! command -v rg >/dev/null 2>&1; then
+    echo "ripgrep not found. installing..."
+    sudo apt update && sudo apt install -y ripgrep
+fi

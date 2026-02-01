@@ -3,12 +3,30 @@
 (scroll-bar-mode -1) ; disable scroll bar
 (tool-bar-mode -1) ; disable tool bar
 
-(set-face-attribute 'default nil :font "Iosevka Fixed Extended") ; set font
+(set-face-attribute 'default nil :font "Iosevka Fixed") ; set font
 
 (global-display-line-numbers-mode t) ; enable line number
 (column-number-mode) ; enable column number
 
+(add-to-list 'auto-mode-alist '("\\.jai\\'" . prog-mode))
 
+(setq-default indent-tabs-mode nil)
+(setq-default tab-width 4)
+(setq-default tab-always-indent 'complete)
+
+(defun my-tab-to-next-multiple ()
+  "Insert spaces to the next tab stop, replacing region if active."
+  (interactive)
+  (when (use-region-p)
+    (delete-region (region-beginning) (region-end)))
+  (let* ((col (current-column))
+         (n tab-width)
+         (spaces (- n (mod col n))))
+    (insert (make-string spaces ?\s))))
+
+(add-hook 'prog-mode-hook
+          (lambda ()
+            (local-set-key (kbd "TAB") #'my-tab-to-next-multiple)))
 
 ;; packages
 (require 'package)
@@ -42,7 +60,8 @@
   :after ivy
   :bind (("M-x" . counsel-M-x)
 	 ("C-x b" . counsel-ibuffer)
-	 ("C-x C-f" . counsel-find-file))
+	 ("C-x C-f" . counsel-find-file)
+     ("C-c s" . counsel-rg))
   :config
   (counsel-mode 1)
   (setq ivy-initial-inputs-alist nil))
