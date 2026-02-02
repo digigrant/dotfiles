@@ -14,7 +14,7 @@
 (setq-default tab-width 4)
 (setq-default tab-always-indent 'complete)
 
-(defun my-tab-to-next-multiple ()
+(defun gej/tab-to-next-multiple ()
   "Insert spaces to the next tab stop, replacing region if active."
   (interactive)
   (when (use-region-p)
@@ -24,9 +24,27 @@
          (spaces (- n (mod col n))))
     (insert (make-string spaces ?\s))))
 
-(add-hook 'prog-mode-hook
-          (lambda ()
-            (local-set-key (kbd "TAB") #'my-tab-to-next-multiple)))
+(defun gej/unindent-line ()
+  "Remove up to `tab-width` leading spaces from the current line."
+  (interactive)
+  (save-excursion           ; move cursor back to where it was afterwards
+    (beginning-of-line)     ; move cursor to column 0
+    (let ((start (point)))  ; start = cursor location (point)
+      (skip-chars-forward " ") ; move cursor to first non-space character
+      (let* ((indent (min tab-width (- (point) start)))) ; indent = min(4, point-start)
+        (when (> indent 0)  ; if there are chars to delete (indent>0),
+          (delete-region start (+ start indent))))))) ; delete them
+
+(global-set-key (kbd "TAB") #'gej/tab-to-next-multiple)
+(global-set-key (kbd "<backtab>") #'gej/unindent-line)
+
+(defun gej/counsel-rg-notes ()
+  "Run counsel-rg in a fixed directory without changing the current working directory."
+  (interactive)
+  (let ((default-directory "~/jai/modules/"))
+    (counsel-rg nil default-directory)))
+
+(global-set-key (kbd "C-c m") #'gej/counsel-rg-notes)
 
 ;; packages
 (require 'package)
