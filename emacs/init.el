@@ -13,6 +13,7 @@
 (setq-default indent-tabs-mode nil)
 (setq-default tab-width 4)
 (setq-default tab-always-indent 'complete)
+(setq case-fold-search nil)
 
 (defun gej/tab-to-next-multiple ()
   "Insert spaces to the next tab stop, replacing region if active."
@@ -45,6 +46,66 @@
     (counsel-rg nil default-directory)))
 
 (global-set-key (kbd "C-c m") #'gej/counsel-rg-notes)
+
+(global-set-key (kbd "C-s") #'save-buffer)
+
+(defun gej/duplicate-lines-below ()
+  "Duplicate current line or active region below, preserving column."
+  (interactive)
+  (let* ((col (current-column))
+         (use-region (use-region-p))
+         (start (if use-region
+                    (save-excursion
+                      (goto-char (region-beginning))
+                      (line-beginning-position))
+                  (line-beginning-position)))
+         (end (if use-region
+                  (save-excursion
+                    (goto-char (region-end))
+                    (line-end-position))
+                (line-end-position)))
+         (content (buffer-substring-no-properties start end))
+         (line-offset (if use-region
+                          (count-lines start (line-beginning-position))
+                        0)))
+    (goto-char end)
+    (newline)
+    (let ((insert-start (point)))
+      (insert content)
+      (goto-char insert-start)
+      (forward-line line-offset)
+      (move-to-column col))))
+
+(defun gej/duplicate-lines-above ()
+  "Duplicate current line or active region above, preserving column."
+  (interactive)
+  (let* ((col (current-column))
+         (use-region (use-region-p))
+         (start (if use-region
+                    (save-excursion
+                      (goto-char (region-beginning))
+                      (line-beginning-position))
+                  (line-beginning-position)))
+         (end (if use-region
+                  (save-excursion
+                    (goto-char (region-end))
+                    (line-end-position))
+                (line-end-position)))
+         (content (buffer-substring-no-properties start end))
+         (line-offset (if use-region
+                          (count-lines start (line-beginning-position))
+                        0)))
+    (goto-char start)
+    (newline)
+    (forward-line -1)
+    (let ((insert-start (point)))
+      (insert content)
+      (goto-char insert-start)
+      (forward-line line-offset)
+      (move-to-column col))))
+
+(global-set-key (kbd "C-M-.") #'gej/duplicate-lines-below)
+(global-set-key (kbd "C-M-,") #'gej/duplicate-lines-above)
 
 ;; packages
 (require 'package)
@@ -86,7 +147,7 @@
 
 (use-package swiper
   :after ivy
-  :bind (("C-s" . swiper)))
+  :bind (("C-f" . swiper)))
 
 (use-package which-key
   :init (which-key-mode)
@@ -107,13 +168,15 @@
 (use-package doom-themes
   :init (load-theme 'doom-badger t))
 
+(use-package magit
+  :ensure t)
 
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(package-selected-packages '(counsel doom-themes helpful ivy-rich)))
+ '(package-selected-packages '(counsel doom-themes helpful ivy-rich magit with-editor)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
