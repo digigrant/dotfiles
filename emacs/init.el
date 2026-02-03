@@ -124,8 +124,6 @@
 (require 'use-package)
 (setq use-package-always-ensure t)
 
-
-
 (use-package ivy
   :diminish
   :config
@@ -170,6 +168,29 @@
 
 (use-package magit
   :ensure t)
+
+; always display magit in a reusable side buffer
+(add-to-list 'display-buffer-alist
+             '("\\*Magit"
+               (display-buffer-reuse-window
+                display-buffer-in-side-window)
+               (side . right)
+               (slot . 0)
+               (window-width . 0.5)))
+
+; refresh magit buffer upon save (only if open)
+(defun gej/magit-visible-p ()
+  (seq-some (lambda (win)
+              (with-current-buffer (window-buffer win)
+                (derived-mode-p 'magit-mode)))
+            (window-list)))
+
+(defun gej/magit-refresh-after-save ()
+  (when (and (featurep 'magit)
+             (gej/magit-visible-p))
+    (magit-refresh-all)))
+
+(add-hook 'after-save-hook #'gej/magit-refresh-after-save)
 
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
