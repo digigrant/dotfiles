@@ -45,9 +45,11 @@
   (let ((default-directory "~/jai/modules/"))
     (counsel-rg nil default-directory)))
 
-(global-set-key (kbd "C-c m") #'gej/counsel-rg-notes)
+(global-set-key (kbd "C-M-m") #'gej/counsel-rg-notes)
 
 (global-set-key (kbd "C-s") #'save-buffer)
+
+(global-set-key (kbd "C-M-o") #'other-window)
 
 (defun gej/duplicate-lines-below ()
   "Duplicate current line or active region below, preserving column."
@@ -136,7 +138,7 @@
 (use-package counsel
   :after ivy
   :bind (("M-x" . counsel-M-x)
-	 ("C-x b" . counsel-ibuffer)
+	 ("C-M-b" . counsel-ibuffer)
 	 ("C-x C-f" . counsel-find-file)
      ("C-c s" . counsel-rg))
   :config
