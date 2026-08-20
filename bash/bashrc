@@ -125,3 +125,4 @@ if [ -f ~/.profile ] && [ -z "$BASHRC_LOADED" ]; then
     BASHRC_LOADED=1
     . ~/.profile >/dev/null 2>&1
 fi
+export PATH="$HOME/.local/bin:$PATH"
